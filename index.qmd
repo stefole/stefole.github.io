@@ -72,7 +72,7 @@ In this course, we cover three arcs: **foundations of network analysis**, **core
 
 <hr class="site-divider">
 <p class="site-footer">
-  Systems Biology — student project site · Built with Quarto
+Quarto is pretty nice.
 </p>
 
 <style>
