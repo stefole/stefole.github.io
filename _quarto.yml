@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+website:
+  title: "Systems Biology"
+  navbar:
+    left: []
+    right:
+      - text: "Course Specification"
+        href: https://kurser.dtu.dk/course/22140
+format:
+  html:
+    theme:
+      dark: darkly
+      light: cosmo
+    mainfont: "Inter"
+    monofont: "Menlo"
+    highlight-style:
+      dark: dracula
+      light: github
+    code-copy: true
+    code-overflow: wrap
+    grid:
+      body-width: 1100px
+      gutter-width: 1rem
+    css:
+      - styles/fonts.css

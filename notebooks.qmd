@@ -1,0 +1,14 @@
+---
+title: "Notebooks"
+listing:
+  contents: nbs
+  type: grid
+  sort: "date desc"
+  fields: [image, title, date, categories, description]
+  page-size: 60
+  grid-columns: 3
+  categories: true
+  filter-ui: true
+---
+
+Browse the notebooks below.

@@ -1,0 +1,14 @@
+{
+  "index.qmd": {
+    "index.html": "71ae9448"
+  },
+  "notebooks.qmd": {
+    "notebooks.html": "3b8f8d49"
+  },
+  "about.qmd": {
+    "about.html": "0c9bfe1a"
+  },
+  "nbs/week1-igraph.qmd": {
+    "week1-igraph.html": "03391b46"
+  }
+}

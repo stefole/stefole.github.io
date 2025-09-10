@@ -1,0 +1,14 @@
+[
+  {
+    "listing": "/notebooks.html",
+    "items": [
+      "/nbs/week1-igraph.html"
+    ]
+  },
+  {
+    "listing": "/index.html",
+    "items": [
+      "/nbs/week1-igraph.html"
+    ]
+  }
+]

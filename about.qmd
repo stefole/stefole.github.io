@@ -1,0 +1,6 @@
+---
+title: "About"
+---
+
+This is my personal site for the course *Introduction to Systems Biology (BSc/MSc)*.
+I’m collecting my exercise solutions here. The code isn’t meant to be perfect—it’s a working record of my learning process, to consolidate material and maybe help others following along.
