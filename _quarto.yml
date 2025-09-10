@@ -25,3 +25,4 @@ format:
       gutter-width: 1rem
     css:
       - styles/fonts.css
+      - styles/styles.css
