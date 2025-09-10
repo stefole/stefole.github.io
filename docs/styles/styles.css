@@ -1,0 +1,17 @@
+/* css styles */
+/* ================= Navbar: inherit theme colors ================= */
+.navbar {
+    background-color: var(--bs-body-bg) !important;
+    /* use theme background */
+    border-bottom: 1px solid var(--bs-border-color) !important;
+    padding-top: .55rem !important;
+    padding-bottom: .55rem !important;
+    min-height: 50px !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: var(--bs-body-color) !important;
+    /* theme text color */
+    font-size: .95rem;
+}
