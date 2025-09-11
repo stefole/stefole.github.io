@@ -2,7 +2,7 @@
 title: "Week 2: Network topology, statistics, and clustering"
 date: 2025-09-11
 description: ""
-categories: [Network topology, Clustering, Advanced Visualqization]
+categories: [Network topology, Clustering, Advanced Visualization]
 image: images/week2.png
 format:
   html: default
