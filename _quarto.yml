@@ -26,3 +26,5 @@ format:
     css:
       - styles/fonts.css
       - styles/styles.css
+resources:
+- nbs/data/**

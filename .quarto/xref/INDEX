@@ -10,5 +10,8 @@
   },
   "nbs/week1-igraph.qmd": {
     "week1-igraph.html": "03391b46"
+  },
+  "nbs/week2-louvian.qmd": {
+    "week2-louvian.html": "92fedfb3"
   }
 }

@@ -21,7 +21,7 @@ library(igraph); library(ggraph); library(tidygraph)
 ```
 
 ```{r}
-load("/data/exercise2.Rdata")
+load("./data/exercise2.Rdata")
 ```
 
 This network consists of 1089 interactions observed between 419 human proteins, and is a small subset of a larger human interaction dataset. This subset consists of proteins that interact with the **transcription factor TP53** (also known as **P53**).
