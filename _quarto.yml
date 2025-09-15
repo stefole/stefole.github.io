@@ -6,6 +6,8 @@ website:
   navbar:
     left: []
     right:
+      - text: "Molecular Biology"
+        href: https://stefole.github.io/molbio/
       - text: "Course Specification"
         href: https://kurser.dtu.dk/course/22140
 format:
