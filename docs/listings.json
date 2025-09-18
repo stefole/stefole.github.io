@@ -2,6 +2,7 @@
   {
     "listing": "/notebooks.html",
     "items": [
+      "/nbs/Week-3-gsea.html",
       "/nbs/week2-louvian.html",
       "/nbs/week1-igraph.html"
     ]
@@ -9,6 +10,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/nbs/Week-3-gsea.html",
       "/nbs/week2-louvian.html",
       "/nbs/week1-igraph.html"
     ]

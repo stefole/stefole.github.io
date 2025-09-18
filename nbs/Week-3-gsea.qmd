@@ -164,8 +164,8 @@ This says a **structure can perform a function or process.**
 
 ```{r}
 # Here I just import the exercise data.
-cluster <- read_csv2("clusterexGO.csv")
-bg_terms <- read_csv2("background_countsexGO.csv")
+cluster <- read_csv2("data/clusterexGO.csv")
+bg_terms <- read_csv2("data/background_countsexGO.csv")
 bg_total <- 5500
 
 cluster
@@ -333,9 +333,9 @@ So:\
 **Target = your cluster 1 genes.**
 
 ```{r}
-load("/home/projects/22140/exercise3_part1.Rdata")
+load("data/exercise3_part1.Rdata")
 
-load("/home/projects/22140/exercise3_part2.Rdata")
+load("data/exercise3_part2.Rdata")
 
 # From now on, I will personally need a lot of help from ChatGPT, but I will try to decipher everything as well.
 
@@ -357,16 +357,16 @@ length(BP_list)          # number of gene sets
 names(BP_list)[1:5]       # first few set names
 head(BP_list[[1]], 10)    # genes inside first set
 
+# Universe: all genes that are "possible draws" for this analysis.
+# We take them from the node table's ORF IDs so they match msigdbr's ORF IDs.
+universe <- unique(node_attributes$ID)   # unique() removes duplicates
+
+# Then clean BP sets to that universe
 clean_sets <- function(pathways, universe){
   sets <- lapply(pathways, function(g) intersect(unique(g), universe))
   sets[vapply(sets, length, integer(1)) > 0]
 }
-
 BP_list <- clean_sets(BP_list, universe)
-
-# Universe: all genes that are "possible draws" for this analysis.
-# We take them from the node table's ORF IDs so they match msigdbr's ORF IDs.
-universe <- unique(node_attributes$ID)   # unique() removes duplicates
 
 # Quick sanity peek:
 length(universe)     # How big is the universe? (a count)
@@ -381,7 +381,6 @@ target <- unique(node_attributes$ID[node_attributes$cluster == "cluster1"])
 # Quick sanity peek:
 length(target)       # How many genes are in Cluster #1?
 head(target, 5)      # Do these look like ORF IDs too?
-
 
 # Sanity checks that prevent nonsense results:
 sum(is.na(target))                    # should be 0 (no missing IDs in target)
@@ -398,5 +397,75 @@ target <- target[!is.na(target)]
 length(target)
 all(target %in% universe)
 
+# Run over-representation for BP
+res_bp <- fora(pathways = BP_list,   # named list: set -> vector of ORF IDs
+               genes    = target,    # your cluster-1 ORF IDs
+               universe = universe)  # all possible ORF IDs (background)
+
+# See what columns we got back
+names(res_bp)        # should include: pathway, pval, padj, size, overlap
+head(res_bp, 5)      # quick peek at the first rows
+
+add_enrichment <- function(res, universe, target){
+  expected   <- (res$size / length(universe)) * length(target)  # random-draw expectation
+  enrichment <- res$overlap / expected                          # effect size (observed/expected)
+  out <- cbind(res, expected = expected, enrichment = enrichment)
+  out[order(out$padj, out$pval), ]                              # rank by adjusted p-value
+}
+
+res_bp <- add_enrichment(res_bp, universe, target)
+
+# Show top-10 BP terms for your report
+top10_bp <- head(res_bp[, c("pathway","overlap","size","expected","enrichment","pval","padj")], 10)
+top10_bp
 
 ```
+
+Now we just repeat the same for CC and MF:
+
+```{r}
+# Get MF & CC from msigdbr
+MF_df <- msigdbr(species = "S. cerevisiae", category = "C5", subcategory = "MF")
+CC_df <- msigdbr(species = "S. cerevisiae", category = "C5", subcategory = "CC")
+
+# Convert to lists
+MF_list <- split(MF_df$ensembl_gene, MF_df$gs_name)
+CC_list <- split(CC_df$ensembl_gene, CC_df$gs_name)
+
+# Clean to your universe
+MF_list <- clean_sets(MF_list, universe)
+CC_list <- clean_sets(CC_list, universe)
+
+# Run fora
+res_mf <- fora(MF_list, target, universe)
+res_cc <- fora(CC_list, target, universe)
+
+# Add enrichment and take top 10
+res_mf  <- add_enrichment(res_mf, universe, target)
+res_cc  <- add_enrichment(res_cc, universe, target)
+
+top10_mf <- head(res_mf[, c("pathway","overlap","size","expected","enrichment","pval","padj")], 10)
+top10_cc <- head(res_cc[, c("pathway","overlap","size","expected","enrichment","pval","padj")], 10)
+
+top10_mf
+top10_cc
+
+```
+
+Because I don't have much time left, I will have ChatGPT explain the logic, probably much better than I will. Perhaps will update it sometime.
+
+Here’s the whole workflow in plain language, with the “why” behind each move.
+
+First, we define two sets of genes. The **universe** (also called background or population) is the pool of all genes we consider “possible draws” for our analysis. In your exercise, we made the universe be **all ORF IDs present in your node table** (e.g., `YLR131C`). We did this because the gene sets we’ll test (from MSigDB) are also in ORF format; using the same ID system everywhere avoids silent mismatches. The **target** is the list of genes you’re curious about—in this case, the genes in **Cluster 1**. Conceptually, over-representation asks: “If I randomly drew the same number of genes from the universe, how often would I hit genes from a given function? Is my target list hitting that function *more often than chance*?”
+
+Next, we fetch **Gene Ontology** gene sets with the `msigdbr` package. GO has three “trunks”: **Biological Process (BP)** for sequences of events like DNA replication, **Molecular Function (MF)** for activities like ATP binding, and **Cellular Component (CC)** for places like the nucleus. `msigdbr()` returns a **data frame** where each row links one gene set name (`gs_name`) to one gene (`ensembl_gene` here means yeast ORF IDs). The over-representation function `fgsea::fora()` does not want a data frame, though—it wants a **named list** mapping each gene set to a vector of its genes. We create that with `split(BP_df$ensembl_gene, BP_df$gs_name)`, which literally groups all genes by their set names. Because statistics must reflect the space you’re drawing from, we then **clean** each gene set to your universe using `intersect()`: if a gene isn’t in your background, we drop it from the set. That way, each set’s **size** truly means “how many genes in *your* universe belong to this set.”
+
+With inputs aligned, we run `fora(pathways = BP_list, genes = target, universe = universe)`. For every gene set, `fora` builds a 2×2 table (in-target vs out-of-target × in-set vs out-of-set) and uses **Fisher’s exact test** to compute a **p-value** (is the overlap bigger than expected by chance?). It also applies **multiple-testing correction** (Benjamini–Hochberg) so you get **`padj`**, which is the column you should rank by. The output includes: the gene set name (`pathway`), **`size`** (how many universe genes are in that set), and **`overlap`** (how many of your target genes hit that set).
+
+Because raw p-values don’t tell effect size, we add **expected** and **enrichment**. The **expected** number of hits in your target for a set is:\
+`expected = (set size / universe size) × target size`.\
+This is the “random draw” prediction. The **enrichment** is `observed / expected = overlap / expected`. If enrichment ≫ 1, your target list contains that function far more than chance would predict. We then sort results by `padj` (and break ties with `pval`) to see the most statistically convincing terms first, and report the **top 10** for BP, MF, and CC.
+
+Two practical details matter a lot in the real world. First, **ID consistency**: your target, your universe, and your gene sets must use the **same identifier namespace** (we standardized on yeast ORFs like `YMR078C`). Any mismatch quietly erases overlaps. Second, **data hygiene**: we dropped a single `NA` in Cluster 1’s IDs because you can’t match a missing identifier to any set; even one NA can break the “all(target %in% universe)” check. Finally, the **choice of universe** changes p-values (and sometimes conclusions). For coursework, using the node table’s IDs is fine and consistent; in research, you’d justify a broader universe (e.g., all expressed genes in your assay) to avoid bias.\
+
+And that will be all for today!

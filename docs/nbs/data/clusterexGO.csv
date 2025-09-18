@@ -1,0 +1,17 @@
+Gene;Description;DNA_replication;DNA_repair;Cell_cycle
+CTF18;Chromosome transmission fidelity protein 18;1;1;1
+DPB2;DNA polymerase epsilon subunit B;1;1;1
+DPB3;DNA polymerase epsilon subunit C;1;1;0
+POL12;DNA polymerase alpha subunit B;1;0;0
+POL1;DNA polymerase alpha catalytic subunit A;1;0;0
+POL2;DNA polymerase epsilon catalytic subunit A;1;1;0
+ELG1;Telomere length regulation protein ELG1;1;1;1
+MET16;Phosphoadenosine phosphosulfate reductase;0;0;0
+PRI1;DNA primase small subunit;1;0;0
+PRI2;DNA primase large subunit;1;0;0
+RFC1;Replication factor C subunit 1;1;1;1
+RFC2;Replication factor C subunit 2;1;1;1
+RFC3;Replication factor C subunit 3;1;1;1
+RFC4;Replication factor C subunit 4;1;1;1
+RFC5;Replication factor C subunit 5;1;1;1
+YCL042W;Putative uncharacterized protein YCL042W;0;0;0
