@@ -185,7 +185,6 @@ Let's plot them!
 ```{r}
 # Split into separate subgraphs for each cluster
 sub_c1 <- induced_subgraph(sub_02, V(sub_02)$cluster == 1)
-sub_c2 <- induced_subgraph(sub_02, V(sub_02)$cluster == 2)
 sub_c3 <- induced_subgraph(sub_02, V(sub_02)$cluster == 3)
 sub_c4 <- induced_subgraph(sub_02, V(sub_02)$cluster == 4)
 
@@ -204,7 +203,6 @@ plot_cluster <- function(graph, title) {
 
 # Plot clusters separately
 plot_cluster(sub_c1, "Cluster 1")
-plot_cluster(sub_c2, "Cluster 2")
 plot_cluster(sub_c3, "Cluster 3")
 plot_cluster(sub_c4, "Cluster 4 (largest)")
 

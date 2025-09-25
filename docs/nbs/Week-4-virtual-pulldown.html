@@ -412,9 +412,9 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick check</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 93fa3d6 UN-- 12396 204070 -- 
+<pre><code>IGRAPH 94dd59b UN-- 12396 204070 -- 
 + attr: name (v/c), inweb_cs (e/n)
-+ edges from 93fa3d6 (vertex names):
++ edges from 94dd59b (vertex names):
  [1] TTC26--KIF3C    TTC26--KIF3B    TTC26--DYNLL1   TTC26--IFT88   
  [5] TTC26--TTC21B   TTC26--IFT20    TTC26--TTC30B   TTC26--DYNC2H1 
  [9] TTC26--WDR19    TTC26--DYNC2LI1 TTC26--TRAF3IP1 TTC26--DYNLRB2 
@@ -442,9 +442,9 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>sub_g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 2c06251 UN-- 340 5626 -- 
+<pre><code>IGRAPH 6ce3794 UN-- 340 5626 -- 
 + attr: name (v/c), inweb_cs (e/n)
-+ edges from 2c06251 (vertex names):
++ edges from 6ce3794 (vertex names):
  [1] BMPR1B--SMAD7   BMPR1B--SMAD9   SMAD7 --SMAD9   MED19 --HDAC3  
  [5] SMAD7 --HDAC3   KMT2D --POLR2D  KMT2D --KDM6A   POLR2D--KDM6A  
  [9] MED19 --MED7    HDAC3 --MED7    BMPR1B--SMAD6   SMAD7 --SMAD6  
@@ -563,25 +563,24 @@ edges      5626       3041       1360      110</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split into separate subgraphs for each cluster</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>sub_c1 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>sub_c2 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">2</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>sub_c3 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to plot a single cluster</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>plot_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(graph, title) {</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggraph</span>(graph, <span class="at">layout =</span> <span class="st">"kk"</span>) <span class="sc">+</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="fu">aes</span>(<span class="at">color =</span> name <span class="sc">%in%</span> seeds)) <span class="sc">+</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">repel =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Neighbour"</span>, <span class="st">"Seed"</span>)) <span class="sc">+</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(title) <span class="sc">+</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>()</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot clusters separately</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c1, <span class="st">"Cluster 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>sub_c3 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to plot a single cluster</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>plot_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(graph, title) {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggraph</span>(graph, <span class="at">layout =</span> <span class="st">"kk"</span>) <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="fu">aes</span>(<span class="at">color =</span> name <span class="sc">%in%</span> seeds)) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">repel =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Neighbour"</span>, <span class="st">"Seed"</span>)) <span class="sc">+</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(title) <span class="sc">+</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>()</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot clusters separately</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c1, <span class="st">"Cluster 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -589,7 +588,7 @@ edges      5626       3041       1360      110</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c2, <span class="st">"Cluster 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c3, <span class="st">"Cluster 3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -597,19 +596,11 @@ edges      5626       3041       1360      110</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c3, <span class="st">"Cluster 3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c4, <span class="st">"Cluster 4 (largest)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c4, <span class="st">"Cluster 4 (largest)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -621,8 +612,8 @@ edges      5626       3041       1360      110</code></pre>
 <p>Why not the full interactome (g) I hear you ask! Because we didn’t give fora() the chance to pick from those, since the clustering only operated on sub_02. Using g as background would inflate significance.</p>
 <p>So:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>universe <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>BP_df <span class="ot">&lt;-</span> <span class="fu">msigdbr</span>(<span class="at">species =</span> <span class="st">"human"</span>, <span class="at">category =</span> <span class="st">"C5"</span>, <span class="at">subcategory =</span> <span class="st">"BP"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>universe <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>BP_df <span class="ot">&lt;-</span> <span class="fu">msigdbr</span>(<span class="at">species =</span> <span class="st">"human"</span>, <span class="at">category =</span> <span class="st">"C5"</span>, <span class="at">subcategory =</span> <span class="st">"BP"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: The `category` argument of `msigdbr()` is deprecated as of msigdbr 10.0.0.
 ℹ Please use the `collection` argument instead.</code></pre>
@@ -631,40 +622,40 @@ edges      5626       3041       1360      110</code></pre>
 <pre><code>Warning: The `subcategory` argument of `msigdbr()` is deprecated as of msigdbr 10.0.0.
 ℹ Please use the `subcollection` argument instead.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">split</span>(BP_df<span class="sc">$</span>gene_symbol, BP_df<span class="sc">$</span>gs_name)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we need to clean the gene sets, just like in Week 3. </span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>clean_sets <span class="ot">&lt;-</span> <span class="cf">function</span>(pathways, universe){</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  sets <span class="ot">&lt;-</span> <span class="fu">lapply</span>(pathways, <span class="cf">function</span>(g) <span class="fu">intersect</span>(<span class="fu">unique</span>(g), universe))</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  sets[<span class="fu">vapply</span>(sets, length, <span class="fu">integer</span>(<span class="dv">1</span>)) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">clean_sets</span>(BP_list, <span class="at">universe =</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name)</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We know the largest clusters, so now we just take the gene names of the genes in each of those clusters. </span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>cl1_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">1</span>]</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>cl3_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>]</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>cl4_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>]</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># And run ORA with fora()! </span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl1_genes, <span class="at">universe =</span> universe)</span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl3_genes, <span class="at">universe =</span> universe)</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl4_genes, <span class="at">universe =</span> universe)</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Then we write a simple function to get the enrichment</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>add_enrichment <span class="ot">&lt;-</span> <span class="cf">function</span>(res, universe, target){</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  expected   <span class="ot">&lt;-</span> (res<span class="sc">$</span>size <span class="sc">/</span> <span class="fu">length</span>(universe)) <span class="sc">*</span> <span class="fu">length</span>(target)</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  enrichment <span class="ot">&lt;-</span> res<span class="sc">$</span>overlap <span class="sc">/</span> expected</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">cbind</span>(res, expected, enrichment)</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  out[<span class="fu">order</span>(res<span class="sc">$</span>padj, res<span class="sc">$</span>pval), ]</span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl1, universe, cl1_genes)</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl3, universe, cl3_genes)</span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl4, universe, cl4_genes)</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl1[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">split</span>(BP_df<span class="sc">$</span>gene_symbol, BP_df<span class="sc">$</span>gs_name)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we need to clean the gene sets, just like in Week 3. </span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>clean_sets <span class="ot">&lt;-</span> <span class="cf">function</span>(pathways, universe){</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  sets <span class="ot">&lt;-</span> <span class="fu">lapply</span>(pathways, <span class="cf">function</span>(g) <span class="fu">intersect</span>(<span class="fu">unique</span>(g), universe))</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  sets[<span class="fu">vapply</span>(sets, length, <span class="fu">integer</span>(<span class="dv">1</span>)) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">clean_sets</span>(BP_list, <span class="at">universe =</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We know the largest clusters, so now we just take the gene names of the genes in each of those clusters. </span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>cl1_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>cl3_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>]</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>cl4_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>]</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co"># And run ORA with fora()! </span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl1_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl3_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl4_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Then we write a simple function to get the enrichment</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>add_enrichment <span class="ot">&lt;-</span> <span class="cf">function</span>(res, universe, target){</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>  expected   <span class="ot">&lt;-</span> (res<span class="sc">$</span>size <span class="sc">/</span> <span class="fu">length</span>(universe)) <span class="sc">*</span> <span class="fu">length</span>(target)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  enrichment <span class="ot">&lt;-</span> res<span class="sc">$</span>overlap <span class="sc">/</span> expected</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">cbind</span>(res, expected, enrichment)</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  out[<span class="fu">order</span>(res<span class="sc">$</span>padj, res<span class="sc">$</span>pval), ]</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl1, universe, cl1_genes)</span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl3, universe, cl3_genes)</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl4, universe, cl4_genes)</span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl1[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                               pathway overlap
                                                                 &lt;char&gt;   &lt;int&gt;
@@ -691,7 +682,7 @@ edges      5626       3041       1360      110</code></pre>
  9:    45 12.729084   2.435368 2.986914e-10 1.199412e-07
 10:    64 18.103586   1.878081 7.827767e-07 2.828955e-04</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl3[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl3[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                                        pathway
                                                                                          &lt;char&gt;
@@ -718,7 +709,7 @@ edges      5626       3041       1360      110</code></pre>
  9:      13    13  2.952191   4.403509 1.332428e-09 5.350438e-07
 10:      15    17  3.860558   3.885449 4.216542e-09 1.523858e-06</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl4[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl4[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                         pathway
                                                                           &lt;char&gt;
@@ -812,13 +803,13 @@ edges      5626       3041       1360      110</code></pre>
 <p>Together, these three clusters <strong>make biological sense in AACM</strong>: they show developmental signaling, epigenetic regulation, and metabolic/transcriptional modulation.</p>
 <p><strong>BUT! Which gene is most central in the largest cluster (as defined by betweenness centrality) though? And does that make sense in the context of AACM pathology?</strong> The largest cluster was 4, so we will take that.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Betweenness in the largest community (cluster 4)</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>bc_c4  <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(sub_c4, <span class="at">directed =</span> <span class="cn">FALSE</span>, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Top by betweenness</span></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>top_gene_c4 <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which.max</span>(bc_c4))</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>top_gene_c4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Betweenness in the largest community (cluster 4)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>bc_c4  <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(sub_c4, <span class="at">directed =</span> <span class="cn">FALSE</span>, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Top by betweenness</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>top_gene_c4 <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which.max</span>(bc_c4))</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>top_gene_c4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "RXRA"</code></pre>
 </div>
