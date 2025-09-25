@@ -17,6 +17,8 @@ library(msigdbr)
 
 ## Goals:
 
+Today we will start working with GSEA!
+
 1.  Understand how Gene Ontology terms are defined and organized:
 
     -   The relationship between GO terms (IS A, PART OF, etc)

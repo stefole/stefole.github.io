@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-09-18">
+<meta name="description" content="Overall objective: learn how to extract meaningful networks from human PPI data">
+
+<title>Week 4: Heart Disease and Virtual Pulldown – Systems Biology</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-304f47ec743b7657586ca7c3ce2f276f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-e4df966e8e1c0a93738432f23545dc51.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles/fonts.css">
+<link rel="stylesheet" href="../styles/styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Systems Biology</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://stefole.github.io/molbio/"> 
+<span class="menu-text">Molecular Biology</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://kurser.dtu.dk/course/22140"> 
+<span class="menu-text">Course Specification</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Week 4: Heart Disease and Virtual Pulldown</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Virtual Pulldown</div>
+    <div class="quarto-category">Network Characterization</div>
+    <div class="quarto-category">Disease case study</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Overall objective: learn how to extract meaningful networks from human PPI data
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 18, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="heart-disease-and-virtual-pulldown" class="level2">
+<h2 class="anchored" data-anchor-id="heart-disease-and-virtual-pulldown">Heart Disease and Virtual Pulldown</h2>
+<p><strong>Learning objectives:</strong></p>
+<ol type="1">
+<li><p>Overall objective: learn how to extract meaningful networks from human PPI data</p>
+<ol type="1">
+<li><p>Virtual pulldowns: sampling 1st order networks and filtering “sticky proteins”</p></li>
+<li><p>Finding tightly connected clusters in larger networks</p></li>
+<li><p>Using R to extract, analyze, interpret and visualize (sub)networks.</p></li>
+</ol></li>
+</ol>
+<p>In this exercise we’ll be working with two different approaches to network characterization:</p>
+<ul>
+<li><p>Building a network “bottom-up” - sampling the 1st order interaction partners for a list of input proteins (“Virtual pulldowns”)</p></li>
+<li><p>Topology based clustering on large input networks, followed by a search for cluster enriched in disease-related proteins</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries needed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'igraph'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    decompose, spectrum</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:base':
+
+    union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(msigdbr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fgsea)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'fgsea' was built under R version 4.5.1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The PPI database we will use is InWeb, created at DTU. Note that it has a confidence score (cs-score) telling us how certain we about each interaction.:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file=</span><span class="st">'data/exercise4.Rdata'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-on-virtual-pulldowns" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-on-virtual-pulldowns">Exercise on “Virtual Pulldowns”</h2>
+<p>We’ll start out with a set of proteins known to be involved in <a href="https://en.wikipedia.org/wiki/Atrioventricular_septal_defect"><strong>atrioventricular canal morphology</strong></a> (“AACM”):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>seeds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ALDH1A2"</span>, <span class="st">"BMP2"</span>, <span class="st">"CXADR"</span>, <span class="st">"GATA4"</span>, <span class="st">"HAS2"</span>, <span class="st">"NF1"</span>, <span class="st">"NKX2-5"</span>, <span class="st">"PITX2"</span>, <span class="st">"PKD2"</span>, <span class="st">"RXRA"</span>, <span class="st">"TBX1"</span>, <span class="st">"TBX2"</span>, <span class="st">"ZFPM1"</span>, <span class="st">"ZFPM2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I will now extract all the connections from the network with a confidence score &gt;= 0.2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter edges by confidence score</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>inWeb_filtered <span class="ot">&lt;-</span> <span class="fu">subset</span>(inWeb, inweb_cs <span class="sc">&gt;=</span> <span class="fl">0.2</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Build igraph graph</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(<span class="at">d =</span> inWeb_filtered, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick check</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>IGRAPH 46d716c UN-- 12396 204070 -- 
++ attr: name (v/c), inweb_cs (e/n)
++ edges from 46d716c (vertex names):
+ [1] TTC26--KIF3C    TTC26--KIF3B    TTC26--DYNLL1   TTC26--IFT88   
+ [5] TTC26--TTC21B   TTC26--IFT20    TTC26--TTC30B   TTC26--DYNC2H1 
+ [9] TTC26--WDR19    TTC26--DYNC2LI1 TTC26--TRAF3IP1 TTC26--DYNLRB2 
+[13] TTC26--DYNC2I1  TTC26--IFT81    TTC26--KIFAP3   TTC26--CLUAP1  
+[17] TTC26--DYNC2I2  TTC26--DYNLL2   TTC26--IFT43    TTC26--IFT74   
+[21] TTC26--IFT140   TTC26--IFT27    TTC26--IFT22    TTC26--IFT122  
+[25] TTC26--DYNLRB1  TTC26--IFT46    TTC26--IFT57    TTC26--IFT80   
+[29] TTC26--WDR35    TTC26--IFT172   TTC26--IFT52    TTC26--KIF3A   
++ ... omitted several edges</code></pre>
+</div>
+</div>
+<p>“IGRAPH f97cc0a UN– 12396 204070” tells us the number of nodes and edges, where 12396 = number of nodes (proteins that remain after filtering) and 204070 = number of edges (interactions with cs ≥ 0.2).</p>
+<p>The edge list below (TTC26 – KIF3C, etc.) shows some of the actual protein–protein connections. We can also see that inweb_cs is stored as an edge attribute, so we can still access the confidence scores later if needed</p>
+<p>Now, we will do the virtual pulldown as a two-step process. First, we extract the subgraph (aka virtual pulldown), and then we filter it.<br>
+</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: get neighbors (1st-order) of all seeds</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>neighbors_list <span class="ot">&lt;-</span> <span class="fu">ego</span>(g, <span class="at">order =</span> <span class="dv">1</span>, <span class="at">nodes =</span> seeds, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Flatten into a single vector of nodes</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>neighbor_nodes <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(neighbors_list))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract subgraph (the virtual pulldown)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>sub_g <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(g, <span class="at">vids =</span> neighbor_nodes)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>sub_g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>IGRAPH 10b8a71 UN-- 340 5626 -- 
++ attr: name (v/c), inweb_cs (e/n)
++ edges from 10b8a71 (vertex names):
+ [1] BMPR1B--SMAD7   BMPR1B--SMAD9   SMAD7 --SMAD9   MED19 --HDAC3  
+ [5] SMAD7 --HDAC3   KMT2D --POLR2D  KMT2D --KDM6A   POLR2D--KDM6A  
+ [9] MED19 --MED7    HDAC3 --MED7    BMPR1B--SMAD6   SMAD7 --SMAD6  
+[13] SMAD9 --SMAD6   MED19 --MED14   HDAC3 --MED14   MED7  --MED14  
+[17] HDAC3 --TBL1X   CASK  --SDC3    TBL1X --SIN3B   MED19 --NCOR1  
+[21] HDAC3 --NCOR1   MED7  --NCOR1   MED14 --NCOR1   TBL1X --NCOR1  
+[25] MED19 --MED24   HDAC3 --MED24   MED7  --MED24   MED14 --MED24  
+[29] NCOR1 --MED24   HDAC3 --EED     NCOR1 --EED     MED19 --MED6   
++ ... omitted several edges</code></pre>
+</div>
+</div>
+<p>The command ego(g, order = 1, nodes = seeds, mode = “all”) extracts the first-order neighborhood for each of the seed proteins, i.e.&nbsp;the seeds themselves and all proteins directly connected to them by one interaction. Because we set mode = “all”, both incoming and outgoing edges are considered, though in this PPI network the edges are undirected. The function returns a list of ego-networks, one per seed.</p>
+<p>We then use unlist() to flatten the list into a single vector of protein names, and unique() to remove duplicates, ensuring each protein only appears once.</p>
+<p>Then, induced_subgraph(g, vids = neighbor_nodes) constructs a new graph object that contains only those proteins (the seeds and their neighbors) and all the edges among them. This subgraph is referred to as a “virtual pulldown,” because it computationally simulates the effect of experimentally pulling down a protein and identifying its binding partners.<br>
+<br>
+Now we filter it by fraction-internal cutoff, this is what the filter_virtual_pulldown() function below does.</p>
+<p>Fraction-internal cutoff represents what fraction of a node’s connections are inside the pulldown network vs.&nbsp;outside in the whole interactome we are analyzing, which if g (after filtering for confidence scores of &gt;= 0.2).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Filter the virtual pulldown to remove "sticky" hub proteins</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Function takes a subgraph, the full parent graph, and a cutoff threshold.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>filter_virtual_pulldown <span class="ot">&lt;-</span> <span class="cf">function</span>(subGraph, parentGraph, cutoff) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Check that both graphs have vertex names (proteins identified by name) ---</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(<span class="fu">V</span>(subGraph)<span class="sc">$</span>name) <span class="sc">||</span> <span class="fu">is.null</span>(<span class="fu">V</span>(parentGraph)<span class="sc">$</span>name))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Both graphs must have vertex 'name' attributes."</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Mode: "all" ensures degrees are calculated without direction ---</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  mode <span class="ot">&lt;-</span> <span class="st">"all"</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Extract node names from the subgraph ---</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  vn <span class="ot">&lt;-</span> <span class="fu">V</span>(subGraph)<span class="sc">$</span>name</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Degree in the full graph: total number of connections each node has globally ---</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  deg_full <span class="ot">&lt;-</span> <span class="fu">degree</span>(parentGraph, <span class="at">v =</span> vn, <span class="at">mode =</span> mode)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Degree in the subgraph: number of connections each node has inside the pulldown ---</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  deg_internal <span class="ot">&lt;-</span> <span class="fu">degree</span>(subGraph, <span class="at">mode =</span> mode)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Combine results into a data frame for each node ---</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">node          =</span> vn,</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">deg_internal  =</span> deg_internal,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">deg_full      =</span> deg_full,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fraction of a node’s total connections that lie within this pulldown</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">frac_internal =</span> <span class="fu">ifelse</span>(deg_full <span class="sc">&gt;</span> <span class="dv">0</span>, deg_internal <span class="sc">/</span> deg_full, <span class="cn">NA_real_</span>),</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Keep only nodes that meet the cutoff for internal fraction ---</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  nodes_to_keep <span class="ot">&lt;-</span> res<span class="sc">$</span>node[<span class="sc">!</span><span class="fu">is.na</span>(res<span class="sc">$</span>frac_internal) <span class="sc">&amp;</span> res<span class="sc">$</span>frac_internal <span class="sc">&gt;=</span> cutoff]</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Build a new subgraph using only the kept nodes ---</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  filteredSubGraph <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(subGraph, <span class="at">vids =</span> <span class="fu">V</span>(subGraph)[name <span class="sc">%in%</span> nodes_to_keep])</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Add the fraction value as a vertex attribute (for later inspection) ---</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">V</span>(filteredSubGraph)<span class="sc">$</span>frac_internal <span class="ot">&lt;-</span> res<span class="sc">$</span>frac_internal[<span class="fu">match</span>(<span class="fu">V</span>(filteredSubGraph)<span class="sc">$</span>name, res<span class="sc">$</span>node)]</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Return the filtered network ---</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>  filteredSubGraph</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we will run “filter_virtual_pulldown()” with these cutoffs: 0, 0.2, 0.5, 1.</p>
+<p>So cutoff = 0 keeps everything. cutoff = 0.2 keeps only proteins where more or equal to 20% of their total connections are inside the pulldown. cutoff = 1 keeps only the proteins whose entire interaction profile is inside the pulldown.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply filter with different cutoffs</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>sub_0   <span class="ot">&lt;-</span> <span class="fu">filter_virtual_pulldown</span>(sub_g, g, <span class="at">cutoff =</span> <span class="dv">0</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>sub_02  <span class="ot">&lt;-</span> <span class="fu">filter_virtual_pulldown</span>(sub_g, g, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>sub_05  <span class="ot">&lt;-</span> <span class="fu">filter_virtual_pulldown</span>(sub_g, g, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>sub_1   <span class="ot">&lt;-</span> <span class="fu">filter_virtual_pulldown</span>(sub_g, g, <span class="at">cutoff =</span> <span class="dv">1</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize number of nodes and edges for each cutoff</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>sizes <span class="ot">&lt;-</span> <span class="fu">sapply</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">no_cutoff =</span> sub_0, <span class="at">cutoff_0.2 =</span> sub_02, <span class="at">cutoff_0.5 =</span> sub_05, <span class="at">cutoff_1 =</span> sub_1),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">nodes =</span> <span class="fu">vcount</span>(x), <span class="at">edges =</span> <span class="fu">ecount</span>(x))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>sizes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      no_cutoff cutoff_0.2 cutoff_0.5 cutoff_1
+nodes       340        251        149       37
+edges      5626       3041       1360      110</code></pre>
+</div>
+</div>
+<p>The table here shows a clear and expected trend – the higher the cutoff, the fewer nodes and edges.</p>
+<p>Now we plot the one with cutoff of 0.2:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># too large for Kamada-Kawai</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(sub_02, <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="fu">degree</span>(sub_02), <span class="at">color =</span> <span class="fu">ifelse</span>(name <span class="sc">%in%</span> seeds, <span class="st">"Seed"</span>, <span class="st">"Neighbour"</span>)), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Seed"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"Neighbour"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>)) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">repel =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="co"># label by 'name' (gene symbol)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now we will look at the clusters using Louvain clustering (see Week 2) :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">22140</span>)  <span class="co"># reproducibility</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(sub_02, <span class="at">resolution =</span> <span class="fl">0.4</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">membership</span>(cl) <span class="co"># This takes the membership vector (a named integer vector where each element is a node, and the value is the community ID it belongs to) and assigns it as a vertex attribute named "cluster" to the sub_02. </span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>cluster_sizes <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">table</span>(<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>cluster_sizes[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># see 3, we will only take the top 2-3 out of the 5 found</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  4   1   3 
+103  71  57 </code></pre>
+</div>
+</div>
+<p>Let’s plot them!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split into separate subgraphs for each cluster</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>sub_c1 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>sub_c2 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>sub_c3 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to plot a single cluster</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>plot_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(graph, title) {</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggraph</span>(graph, <span class="at">layout =</span> <span class="st">"kk"</span>) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="fu">aes</span>(<span class="at">color =</span> name <span class="sc">%in%</span> seeds)) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">repel =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Neighbour"</span>, <span class="st">"Seed"</span>)) <span class="sc">+</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(title) <span class="sc">+</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>()</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot clusters separately</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c1, <span class="st">"Cluster 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c2, <span class="st">"Cluster 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c3, <span class="st">"Cluster 3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_cluster</span>(sub_c4, <span class="st">"Cluster 4 (largest)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Week-4-virtual-pulldown_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Alright, so now we will use the 2-3 largest clusters to do gene-set overrepressentation analysis (ORA) with fora() (first mentioned in Week 3).</p>
+<p>Target = the genes in the cluster.</p>
+<p>Universe (aka background) = all the genes that could have been chosen in this analysis.</p>
+<p>Here, our universe is all the proteins in the filtered pulldown network (V(sub_02)$name).</p>
+<p>Why not the full interactome (g) I hear you ask! Because we didn’t give fora() the chance to pick from those, since the clustering only operated on sub_02. Using g as background would inflate significance.</p>
+<p>So:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>universe <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>BP_df <span class="ot">&lt;-</span> <span class="fu">msigdbr</span>(<span class="at">species =</span> <span class="st">"human"</span>, <span class="at">category =</span> <span class="st">"C5"</span>, <span class="at">subcategory =</span> <span class="st">"BP"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `category` argument of `msigdbr()` is deprecated as of msigdbr 10.0.0.
+ℹ Please use the `collection` argument instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `subcategory` argument of `msigdbr()` is deprecated as of msigdbr 10.0.0.
+ℹ Please use the `subcollection` argument instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">split</span>(BP_df<span class="sc">$</span>gene_symbol, BP_df<span class="sc">$</span>gs_name)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we need to clean the gene sets, just like in Week 3. </span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>clean_sets <span class="ot">&lt;-</span> <span class="cf">function</span>(pathways, universe){</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  sets <span class="ot">&lt;-</span> <span class="fu">lapply</span>(pathways, <span class="cf">function</span>(g) <span class="fu">intersect</span>(<span class="fu">unique</span>(g), universe))</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  sets[<span class="fu">vapply</span>(sets, length, <span class="fu">integer</span>(<span class="dv">1</span>)) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>BP_list <span class="ot">&lt;-</span> <span class="fu">clean_sets</span>(BP_list, <span class="at">universe =</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We know the largest clusters, so now we just take the gene names of the genes in each of those clusters. </span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>cl1_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>cl3_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">3</span>]</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>cl4_genes <span class="ot">&lt;-</span> <span class="fu">V</span>(sub_02)<span class="sc">$</span>name[<span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>]</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># And run ORA with fora()! </span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl1_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl3_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">fora</span>(BP_list, <span class="at">genes =</span> cl4_genes, <span class="at">universe =</span> universe)</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Then we write a simple function to get the enrichment</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>add_enrichment <span class="ot">&lt;-</span> <span class="cf">function</span>(res, universe, target){</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  expected   <span class="ot">&lt;-</span> (res<span class="sc">$</span>size <span class="sc">/</span> <span class="fu">length</span>(universe)) <span class="sc">*</span> <span class="fu">length</span>(target)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  enrichment <span class="ot">&lt;-</span> res<span class="sc">$</span>overlap <span class="sc">/</span> expected</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">cbind</span>(res, expected, enrichment)</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  out[<span class="fu">order</span>(res<span class="sc">$</span>padj, res<span class="sc">$</span>pval), ]</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>res_cl1 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl1, universe, cl1_genes)</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>res_cl3 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl3, universe, cl3_genes)</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>res_cl4 <span class="ot">&lt;-</span> <span class="fu">add_enrichment</span>(res_cl4, universe, cl4_genes)</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl1[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                               pathway overlap
+                                                                &lt;char&gt;   &lt;int&gt;
+ 1:              GOBP_RNA_POLYMERASE_II_PREINITIATION_COMPLEX_ASSEMBLY      27
+ 2: GOBP_POSITIVE_REGULATION_OF_DNA_TEMPLATED_TRANSCRIPTION_ELONGATION      26
+ 3:                  GOBP_TRANSCRIPTION_PREINITIATION_COMPLEX_ASSEMBLY      27
+ 4: GOBP_POSITIVE_REGULATION_OF_DNA_TEMPLATED_TRANSCRIPTION_INITIATION      28
+ 5:          GOBP_REGULATION_OF_DNA_TEMPLATED_TRANSCRIPTION_INITIATION      29
+ 6:                        GOBP_DNA_TEMPLATED_TRANSCRIPTION_ELONGATION      26
+ 7:          GOBP_REGULATION_OF_DNA_TEMPLATED_TRANSCRIPTION_ELONGATION      26
+ 8:        GOBP_TRANSCRIPTION_INITIATION_AT_RNA_POLYMERASE_II_PROMOTER      31
+ 9:                        GOBP_DNA_TEMPLATED_TRANSCRIPTION_INITIATION      31
+10:                       GOBP_PROTEIN_CONTAINING_COMPLEX_ORGANIZATION      34
+     size  expected enrichment         pval         padj
+    &lt;int&gt;     &lt;num&gt;      &lt;num&gt;        &lt;num&gt;        &lt;num&gt;
+ 1:    28  7.920319   3.408954 5.008747e-16 1.810161e-12
+ 2:    27  7.637450   3.404278 2.405460e-15 4.346666e-12
+ 3:    29  8.203187   3.291404 5.881541e-15 7.085296e-12
+ 4:    33  9.334661   2.999573 3.638659e-13 2.878658e-10
+ 5:    35  9.900398   2.929175 3.982648e-13 2.878658e-10
+ 6:    30  8.486056   3.063850 1.277860e-12 6.597407e-10
+ 7:    30  8.486056   3.063850 1.277860e-12 6.597407e-10
+ 8:    44 12.446215   2.490717 1.141799e-10 5.158079e-08
+ 9:    45 12.729084   2.435368 2.986914e-10 1.199412e-07
+10:    64 18.103586   1.878081 7.827767e-07 2.828955e-04</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl3[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                        pathway
+                                                                                         &lt;char&gt;
+ 1:                                       GOBP_ENZYME_LINKED_RECEPTOR_PROTEIN_SIGNALING_PATHWAY
+ 2:                GOBP_CELL_SURFACE_RECEPTOR_PROTEIN_SERINE_THREONINE_KINASE_SIGNALING_PATHWAY
+ 3:                                                          GOBP_PATTERN_SPECIFICATION_PROCESS
+ 4:                                                                        GOBP_RESPONSE_TO_BMP
+ 5:                                                       GOBP_SMAD_PROTEIN_SIGNAL_TRANSDUCTION
+ 6: GOBP_REGULATION_OF_TRANSMEMBRANE_RECEPTOR_PROTEIN_SERINE_THREONINE_KINASE_SIGNALING_PATHWAY
+ 7:                                                              GOBP_RESPONSE_TO_GROWTH_FACTOR
+ 8:                                                                           GOBP_OSSIFICATION
+ 9:                                                     GOBP_ACTIVIN_RECEPTOR_SIGNALING_PATHWAY
+10:                                                    GOBP_REGULATION_OF_BMP_SIGNALING_PATHWAY
+    overlap  size  expected enrichment         pval         padj
+      &lt;int&gt; &lt;int&gt;     &lt;num&gt;      &lt;num&gt;        &lt;num&gt;        &lt;num&gt;
+ 1:      36    58 13.171315   2.733212 2.525198e-14 5.223250e-11
+ 2:      31    44  9.992032   3.102472 2.890564e-14 5.223250e-11
+ 3:      35    56 12.717131   2.752193 6.022945e-14 7.255641e-11
+ 4:      26    33  7.494024   3.469431 1.190609e-13 1.075715e-10
+ 5:      17    18  4.087649   4.158869 2.094583e-11 1.513965e-08
+ 6:      25    36  8.175299   3.057992 6.261322e-11 3.771403e-08
+ 7:      34    63 14.306773   2.376497 1.093134e-10 5.643697e-08
+ 8:      27    43  9.764940   2.764994 2.834229e-10 1.280363e-07
+ 9:      13    13  2.952191   4.403509 1.332428e-09 5.350438e-07
+10:      15    17  3.860558   3.885449 4.216542e-09 1.523858e-06</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res_cl4[, <span class="fu">c</span>(<span class="st">"pathway"</span>,<span class="st">"overlap"</span>,<span class="st">"size"</span>,<span class="st">"expected"</span>,<span class="st">"enrichment"</span>,<span class="st">"pval"</span>,<span class="st">"padj"</span>)], <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                         pathway
+                                                                          &lt;char&gt;
+ 1:                                                    GOBP_CHROMATIN_REMODELING
+ 2:                                                  GOBP_CHROMATIN_ORGANIZATION
+ 3:                                GOBP_EPIGENETIC_REGULATION_OF_GENE_EXPRESSION
+ 4:                                                 GOBP_CHROMOSOME_ORGANIZATION
+ 5:                                                   GOBP_TELOMERE_ORGANIZATION
+ 6:                                                 GOBP_NUCLEOSOME_ORGANIZATION
+ 7: GOBP_NEGATIVE_REGULATION_OF_NUCLEOBASE_CONTAINING_COMPOUND_METABOLIC_PROCESS
+ 8:                            GOBP_NEGATIVE_REGULATION_OF_RNA_METABOLIC_PROCESS
+ 9:                       GOBP_NEGATIVE_REGULATION_OF_GENE_EXPRESSION_EPIGENETIC
+10:                                               GOBP_HETEROCHROMATIN_FORMATION
+    overlap  size  expected enrichment         pval         padj
+      &lt;int&gt; &lt;int&gt;     &lt;num&gt;      &lt;num&gt;        &lt;num&gt;        &lt;num&gt;
+ 1:      47    55 22.569721   2.082436 2.157256e-14 7.796322e-11
+ 2:      50    61 25.031873   1.997453 6.417578e-14 1.159656e-10
+ 3:      31    34 13.952191   2.221873 8.629264e-11 1.039539e-07
+ 4:      18    19  7.796813   2.308636 5.218318e-07 4.714750e-04
+ 5:      14    14  5.745020   2.436893 2.202884e-06 1.592245e-03
+ 6:      18    20  8.207171   2.193204 3.410311e-06 2.054144e-03
+ 7:      62   109 44.729084   1.386123 6.680146e-06 3.017756e-03
+ 8:      62   109 44.729084   1.386123 6.680146e-06 3.017756e-03
+ 9:      14    15  6.155378   2.274434 2.146185e-05 8.618126e-03
+10:      13    14  5.745020   2.262829 5.291817e-05 1.912463e-02</code></pre>
+</div>
+</div>
+<p>OK, now i will have ChatGPT do the analysis of the tables – exactly what LLMs are good for.</p>
+</section>
+<section id="cluster-1" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-1"><strong>Cluster 1</strong></h2>
+<p><strong>Top terms:</strong></p>
+<ul>
+<li><p>Transcription initiation (RNA polymerase II).</p></li>
+<li><p>Fatty acid metabolic process regulation.</p></li>
+<li><p>Cholesterol storage.</p></li>
+<li><p>Interferon-gamma response.</p></li>
+</ul>
+<p><strong>AACM interpretation:</strong></p>
+<ul>
+<li><p>At first, lipid and cholesterol processes seem unrelated to embryonic AV canal formation. But notice that one of your <strong>seed genes, RXRA</strong>, is a <strong>nuclear receptor for retinoic acid</strong>. Retinoic acid signaling directly regulates <strong>endocardial cushion development</strong>. Lipid/cholesterol handling is part of how RXRA exerts its function.</p></li>
+<li><p>The immune/inflammatory signal (IFN-γ response) is also not core developmental biology, but inflammation-related pathways do modulate <strong>extracellular matrix remodeling</strong> in cushions.</p></li>
+<li><p>The transcription-initiation enrichment may reflect the presence of transcription factors like <strong>GATA4</strong> and <strong>TBX genes</strong>, which are central to AACM.</p></li>
+</ul>
+<p><strong>Summary:</strong> Cluster 1 looks like a <strong>mixed regulatory/metabolic group</strong>: transcription factors + lipid metabolism, tying to RXRA’s role in AV cushion formation.</p>
+<hr>
+</section>
+<section id="cluster-3" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-3"><strong>Cluster 3</strong></h2>
+<p><strong>Top terms:</strong></p>
+<ul>
+<li><p>Enzyme-linked receptor signaling.</p></li>
+<li><p>BMP/TGF-β signaling.</p></li>
+<li><p>Growth factor response.</p></li>
+<li><p>Organ morphogenesis.</p></li>
+<li><p>Ossification, SMAD protein signaling.</p></li>
+</ul>
+<p><strong>AACM interpretation:</strong></p>
+<ul>
+<li><p>This is your <strong>canonical developmental cluster</strong>. BMP2 and its downstream SMADs drive the <strong>epithelial-to-mesenchymal transition (EMT)</strong> that seeds mesenchymal cells in the endocardial cushions.</p></li>
+<li><p>TBX2, NKX2-5, and GATA4 interact with BMP/TGF-β pathways to regulate <strong>atrioventricular septum development</strong>.</p></li>
+<li><p>Organ morphogenesis and ossification terms reflect cushion maturation into valve structures.</p></li>
+</ul>
+<p><strong>Summary:</strong> Cluster 3 is the <strong>heart of AACM biology</strong> — direct evidence of the BMP/TGF-β/SMAD axis in endocardial cushion morphogenesis.</p>
+<hr>
+</section>
+<section id="cluster-4" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-4"><strong>Cluster 4</strong></h2>
+<p><strong>Top terms:</strong></p>
+<ul>
+<li><p>Chromosome organization, chromatin remodeling.</p></li>
+<li><p>Histone modification.</p></li>
+<li><p>Epigenetic regulation of gene expression.</p></li>
+</ul>
+<p><strong>AACM interpretation:</strong></p>
+<ul>
+<li><p>This cluster represents the <strong>epigenetic control layer</strong>. The TBX, NKX, and GATA transcription factors that pattern the AV canal are tightly controlled by chromatin state.</p></li>
+<li><p>Mutations in chromatin modifiers (like KMT2D — one of your cluster genes) are known to cause <strong>congenital heart defects</strong>.</p></li>
+<li><p>Thus, while not heart-specific, these processes are mechanistically critical for allowing developmental genes to be expressed at the right time/place during AV canal formation.</p></li>
+</ul>
+<p><strong>Summary:</strong> Cluster 4 is the <strong>epigenetic enabler</strong> of AACM gene regulation.</p>
+<hr>
+</section>
+<section id="overall-synthesis" class="level2">
+<h2 class="anchored" data-anchor-id="overall-synthesis">Overall synthesis</h2>
+<ul>
+<li><p><strong>Cluster 3</strong> → <em>core developmental signaling (BMP/TGF-β/SMAD, morphogenesis)</em> — directly drives atrioventricular canal formation.</p></li>
+<li><p><strong>Cluster 4</strong> → <em>epigenetic control (chromatin organization, histone modification)</em> — regulates transcription factor activity in cushion development.</p></li>
+<li><p><strong>Cluster 1</strong> → <em>transcription factors, lipid metabolism, RXRA-related retinoic acid signaling, plus immune modifiers</em>— adds metabolic and regulatory nuance to AACM biology.</p></li>
+</ul>
+<p>Together, these three clusters <strong>make biological sense in AACM</strong>: they show developmental signaling, epigenetic regulation, and metabolic/transcriptional modulation.</p>
+<p><strong>BUT! Which gene is most central in the largest cluster (as defined by betweenness centrality) though? And does that make sense in the context of AACM pathology?</strong> The largest cluster was 4, so we will take that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Betweenness in the largest community (cluster 4)</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sub_c4 <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(sub_02, <span class="fu">V</span>(sub_02)<span class="sc">$</span>cluster <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>bc_c4  <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(sub_c4, <span class="at">directed =</span> <span class="cn">FALSE</span>, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Top by betweenness</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>top_gene_c4 <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which.max</span>(bc_c4))</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>top_gene_c4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "RXRA"</code></pre>
+</div>
+</div>
+<p>Ok, now let’s check out <a href="https://en.wikipedia.org/wiki/Retinoid_X_receptor">RXRA</a>! RXRA encodes the retinoid X receptor alpha, a transcription factor that mediates retinoic acid signaling. Retinoic acid is known to be essential for atrioventricular canal development, particularly through regulation of endocardial cushion formation. So it does make sense!<br>
+<br>
+Here’s a bit more from ChatGPT on RXRA in the context of the atrioventricular septal defect. And that’s all for today!<br>
+<br>
+RXRA background</p>
+<ul>
+<li><p>RXRA is a <strong>nuclear receptor</strong> that binds retinoic acid (a vitamin A derivative).</p></li>
+<li><p>It acts as a transcription factor, forming heterodimers with RARs, PPARs, and others.</p></li>
+<li><p>In development, retinoic acid signaling is essential for <strong>heart morphogenesis</strong> — especially atrial and ventricular septation.</p></li>
+</ul>
+<hr>
+<section id="rxra-in-aacm" class="level3">
+<h3 class="anchored" data-anchor-id="rxra-in-aacm">RXRA in AACM</h3>
+<ul>
+<li><p>In the <strong>atrioventricular canal</strong>, retinoic acid signaling via RXRA helps regulate <strong>endocardial cushion formation</strong>.</p></li>
+<li><p>Endocardial cushions are precursors to the atrioventricular septum and valves.</p></li>
+<li><p>RXRA knockout mice show <strong>congenital heart defects</strong>, including atrioventricular septal defects, outflow tract malformations, and valve abnormalities.</p></li>
+<li><p>So RXRA is not only relevant — it’s actually <strong>directly tied to the disease phenotype you’re studying</strong>.</p></li>
+</ul>
+<hr>
+</section>
+<section id="why-rxra-as-most-central-makes-sense" class="level3">
+<h3 class="anchored" data-anchor-id="why-rxra-as-most-central-makes-sense">Why RXRA as “most central” makes sense</h3>
+<ul>
+<li><p>Network-wise: RXRA interacts with many transcriptional regulators and chromatin-modifying partners. That makes it a <strong>bridge</strong> between metabolic signals (vitamin A/lipids) and gene expression control.</p></li>
+<li><p>Biologically: This fits cluster 4’s “epigenetic regulation” theme — RXRA doesn’t remodel chromatin itself, but it recruits chromatin-modifying complexes to regulate transcription.</p></li>
+<li><p>Disease-wise: Because RXRA integrates metabolic cues with gene regulation, its centrality in the network mirrors its <strong>central role in AV canal morphogenesis</strong>.</p></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
