@@ -1,6 +1,6 @@
 ---
 title: "Week 4: Heart Disease and Virtual Pulldown"
-date: 2025-09-18
+date: 2025-09-25
 description: "Overall objective: learn how to extract meaningful networks from human PPI data"
 categories: [Virtual Pulldown, Network Characterization, Disease case study]
 image: images/week4.png
